@@ -10,7 +10,17 @@ install: pip install -r build_requirements.txt
 script:
   - python setup.py sdist
   - python setup.py bdist_wheel
-  - flake8 pluggable_package.py
+  - flake8 scriba
   - coverage run setup.py test
 after_success:
   - coveralls
+deploy:
+  provider: pypi
+  user: monkeython
+  password:
+    secure: "MiD/uXfVdKqWWFmqWWG7B4uyY/3tNPmMVGBNO7lreEZhzpAX16X0tOv6B4Sh/UsctaxDROs+O9fl+78vElErH03B2tSvtbwDDH/6T8jMUeMv0pxwjkrt8z0BskM4mEIukkxDn3E8tDBZYhuoLXFrr99TVUsOajwWsf00vOJMqSg="
+  on:
+    tags: true
+    all_branches: true
+    repo: monkeython/scriba
+    distributions: "sdist bdist_wheel"
