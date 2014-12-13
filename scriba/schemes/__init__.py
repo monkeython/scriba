@@ -1,4 +1,1 @@
-from cereal.schemes import file_
-
-
-__all__ = ['file_']
+__import__('pkg_resources').declare_namespace(__name__)

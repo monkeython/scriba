@@ -4,14 +4,26 @@ import base64
 import re
 import urllib
 
-from cereal import content_types
+import multipla
 
 
-def get(url, **args):
+content_types = multipla.power_up('scriba.content_types')
+
+data_re = """
+    (?P<mediatype>
+        (?P<maintype>[^/]+)/(?P<subtype>[^;]+)
+            (?P<params>;[^=]+=[^;,]+)*
+    )?
+    (?P<base64>;base64)?
+    ,
+    (?P<data>.*)
+"""
+data_re = re.compile(data_re, re.VERBOSE)
+
+def read(url, **args):
     """Loads an object from a data URI."""
-    info_re = '(?P<mediatype>[^/]+/[^;]+(;[^=]+=[^;]+)*)?(?P<base64>;base64)?'
     info, data = url.path.split(',')
-    info = re.match(info_re, info).groupdict()
+    info = data_re.search(info).groupdict()
     mediatype = info.setdefault('mediatype', 'text/plain;charset=US-ASCII')
     if ';' in mediatype:
         mimetype, params = mediatype.split(';', 1)
@@ -23,20 +35,21 @@ def get(url, **args):
     return content_types.get(mimetype).parse(data, **params)
 
 
-def put(url, object_, **args):
+def write(url, object_, **args):
     """Writes an object to a data URI."""
-    content_encoding = args.get('content_encoding', 'base64')
     default_content_type = ('text/plain', {'charset': 'US-ASCII'})
+    content_encoding = args.get('content_encoding', 'base64')
     content_type, params = args.get('content_type', default_content_type)
     data = content_types.get(content_type).format(object_, **params)
     args['data'].write('data:{}'.format(content_type))
-    if params:
-        args['data'].write(';{}={}'.format(k, v) for k, v in params.items())
+    for param, value in params.items():
+        args['data'].write(';{}={}'.format(param, value))
     if content_encoding == 'base64':
         args['data'].write(';base64,{}'.format(base64.b64decode(data)))
     else:
-        args['data'].write(',{}', urllib.quote(data)
+        args['data'].write(',{}', urllib.quote(data))
     args['data'].seek(0)
 
-def delete(url, **args):
+
+def erase(url, **args):
     pass
