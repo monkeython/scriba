@@ -16,11 +16,11 @@ after_success:
   - coveralls
 deploy:
   provider: pypi
+  distributions: "sdist bdist_wheel"
   user: monkeython
   password:
-    secure: "MiD/uXfVdKqWWFmqWWG7B4uyY/3tNPmMVGBNO7lreEZhzpAX16X0tOv6B4Sh/UsctaxDROs+O9fl+78vElErH03B2tSvtbwDDH/6T8jMUeMv0pxwjkrt8z0BskM4mEIukkxDn3E8tDBZYhuoLXFrr99TVUsOajwWsf00vOJMqSg="
+    secure: "UW1o4EiK6yaoAnXjyIFU8hz7Jm8BNSt/U0AZLMSRTfCqpqfNNrsR8dSyHCm4Ht1IEFez4jiOpOaM5HvQfOSIH/h3xCP9mk2v69Ak7X1UGFZjIhZk7Ke7IMpWDUL0OSDXYKndt5c2gkWwfWzS3Ybx75InK2TJZzSwIMDJPMe3YBA="
   on:
     tags: true
     all_branches: true
     repo: monkeython/scriba
-    distributions: "sdist bdist_wheel"
